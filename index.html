@@ -1,0 +1,628 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08743d">
+  <title>SariSari Pro | Store Management</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app-layout">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">
+        <img src="images/sarisari-logo.png" alt="SariSari Pro Logo">
+      </div>
+      <h1>SariSari <span>Pro</span></h1>
+      <p>Smart Store. Better Business!</p>
+    </div>
+
+    <div class="side-label">MAIN MENU</div>
+    <nav class="side-nav">
+      <button class="nav-btn active" onclick="navigateTo('home')">
+        <span>⌂</span> Home
+      </button>
+      <button class="nav-btn" onclick="navigateTo('products')">
+        <span>🛒</span> Products
+      </button>
+      <button class="nav-btn" onclick="navigateTo('sales')">
+        <span>▤</span> Sales
+      </button>
+      <button class="nav-btn" onclick="navigateTo('expiration')">
+        <span>📅</span> Expiration
+      </button>
+      <button class="nav-btn" onclick="navigateTo('loans')">
+  <span>💳</span> Pautang
+        
+</button>
+
+<button class="nav-btn" onclick="navigateTo('reports')">
+  <span>📊</span> Reports
+</button>
+
+<button class="nav-btn" onclick="navigateTo('suppliers')">
+  <span>🏪</span> Suppliers
+</button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="footer-leaf">🌱</div>
+      <strong>Grow your store!</strong>
+      <p>Simple tools for your everyday business.</p>
+    </div>
+    <div class="sidebar-credit">Made for sari-sari store owners ♥</div>
+  </aside>
+
+  <main class="main-content">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">YOUR STORE AT A GLANCE</p>
+        <h2>Welcome to SariSari Pro! <span>👋</span></h2>
+        <p class="topbar-subtitle">Manage your store with ease.</p>
+      </div>
+      <div class="status-pill">
+        <span class="status-dot"></span> Store Dashboard
+      </div>
+    </header>
+
+    <!-- HOME -->
+    <section id="home" class="page">
+      <div class="section-heading">
+        <div>
+          <h2>Dashboard Overview</h2>
+          <p>Here's how your store is doing today.</p>
+        </div>
+        <span class="today-pill">🌿 My Store</span>
+      </div>
+
+      <div class="welcome-banner">
+        <div>
+          <span class="banner-tag">YOUR BUSINESS, YOUR GROWTH</span>
+          <h3>Small store, big dreams. 🌱</h3>
+          <p>Keep track of your products and sales in one place.</p>
+        </div>
+        <div class="banner-art">🛒🌿</div>
+      </div>
+
+      <div class="stats-grid">
+        <article class="stat-card stat-green">
+          <div class="stat-icon">🛍️</div>
+          <div>
+            <p>Total Products</p>
+            <h3 id="totalProducts">0</h3>
+            <span class="stat-note">Items in your inventory</span>
+          </div>
+          <div class="stat-decoration">✦</div>
+        </article>
+        <article class="stat-card stat-yellow">
+          <div class="stat-icon">₱</div>
+          <div>
+            <p>Total Sales</p>
+            <h3 id="totalSales">₱0.00</h3>
+            <span class="stat-note">All recorded sales</span>
+          </div>
+          <div class="stat-decoration">✦</div>
+        </article>
+        <article class="stat-card stat-purple">
+          <div class="stat-icon">📈</div>
+          <div>
+            <p>Today's Sales</p>
+            <h3 id="todaySales">₱0.00</h3>
+            <span class="stat-note">Sales recorded today</span>
+          </div>
+          <div class="stat-decoration">✦</div>
+        </article>
+      </div>
+      <!-- DASHBOARD CHARTS -->
+<div class="dashboard-charts">
+
+  <div class="panel chart-panel">
+    <div class="panel-header">
+      <div>
+        <h3>Sales Overview</h3>
+        <p>Daily sales for the last 7 days</p>
+      </div>
+      <span>📈</span>
+    </div>
+    <div id="salesChart" class="chart-bars"></div>
+  </div>
+
+  <div class="panel chart-panel">
+    <div class="panel-header">
+      <div>
+        <h3>Top-Selling Products</h3>
+        <p>Products with the highest quantity sold</p>
+      </div>
+      <span>🏆</span>
+    </div>
+    <div id="topProductsChart" class="chart-bars"></div>
+  </div>
+
+  <div class="panel chart-panel">
+    <div class="panel-header">
+      <div>
+        <h3>Expense Overview</h3>
+        <p>Daily recorded expenses for the last 7 days</p>
+      </div>
+      <span>🧾</span>
+    </div>
+    <div id="expenseChart" class="chart-bars"></div>
+  </div>
+
+</div>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <div class="heading-title">
+            <span class="heading-icon">⚠️</span>
+            <h3>Low Stock Alert</h3>
+          </div>
+          <span id="lowStockCount" class="stock-count">0 items</span>
+        </div>
+        <div class="panel-body">
+          <div id="lowStockList"></div>
+        </div>
+      </section>
+
+      <section class="panel expiration-panel">
+        <div class="panel-heading">
+          <div class="heading-title">
+            <span class="heading-icon">📅</span>
+            <h3>Expiration Alerts</h3>
+          </div>
+          <span id="expirationCount" class="stock-count">0 items</span>
+        </div>
+        <div class="panel-body">
+          <div id="expirationAlerts"></div>
+        </div>
+      </section>
+
+      <div class="dashboard-grid">
+        <section class="panel add-panel">
+          <div class="panel-heading green-heading">
+            <div class="heading-title">
+              <span class="heading-icon">＋</span>
+              <h3>Add New Product</h3>
+            </div>
+            <span class="heading-badge">INVENTORY</span>
+          </div>
+          <div class="panel-body">
+            <p class="panel-description">Add an item to your store inventory.</p>
+            <form id="productForm" class="product-form">
+              <label for="productName">Product Name</label>
+              <input id="productName" type="text"
+                placeholder="e.g. Lucky Me Pancit Canton" required>
+
+              <label for="productExpiry">Expiration Date</label>
+              <input id="productExpiry" type="date">
+
+              <div class="form-row">
+                <div>
+                  <label for="productPrice">Price (₱)</label>
+                  <input id="productPrice" type="number"
+                    placeholder="0.00" min="0.01" step="0.01" required>
+                </div>
+                <div>
+                  <label for="productStock">Stock Quantity</label>
+                  <input id="productStock" type="number"
+                    placeholder="0" min="0" step="1" required>
+                </div>
+              </div>
+              <button class="primary-btn add-submit" type="submit">
+                ＋ Add Product
+              </button>
+            </form>
+            <div class="tip-box">
+              <span>💡</span>
+              <p>Keep your product stock and expiration dates updated.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel recent-panel">
+          <div class="panel-heading">
+            <div class="heading-title">
+              <span class="heading-icon">▤</span>
+              <h3>Recent Sales</h3>
+            </div>
+            <button class="text-btn" onclick="navigateTo('sales')">View All →</button>
+          </div>
+          <div class="panel-body">
+            <div id="recentSalesList"></div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section id="products" class="page" hidden>
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">INVENTORY MANAGEMENT</p>
+          <h2>My Products 🛒</h2>
+          <p>Manage your items, prices, and available stock.</p>
+          <button class="primary-btn" onclick="navigateTo('home')">
+  ＋ Add New Product
+          </button>
+        </div>
+        <span class="today-pill">📦 Inventory</span>
+      </div>
+
+      <div class="inventory-banner">
+        <div>
+          <h3>Everything in your store, organized.</h3>
+          <p>Add new items, update prices, or record a sale.</p>
+        </div>
+        <span>🏪</span>
+      </div>
+
+      <section class="panel inventory-panel">
+        <div class="panel-heading">
+          <div class="heading-title">
+            <span class="heading-icon">📋</span>
+            <h3>Product Inventory</h3>
+          </div>
+          <span class="heading-badge light-badge">MANAGE ITEMS</span>
+        </div>
+        <div class="panel-body">
+          <div id="productList"></div>
+        </div>
+      </section>
+    </section>
+
+    <!-- SALES -->
+
+    <!-- SALES -->
+    <section id="sales" class="page" hidden>
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">TRANSACTION RECORDS</p>
+          <h2>Sales Summary 📊</h2>
+          <p>Review the sales you have recorded.</p>
+        </div>
+        <span class="today-pill">💰 Sales Report</span>
+      </div>
+
+      <!-- SALES SUMMARY -->
+      <div class="stats-grid sales-stats">
+        <article class="stat-card stat-green">
+          <div class="stat-icon">🧾</div>
+          <div>
+            <p>Total Transactions</p>
+            <h3 id="transactionCount">0</h3>
+            <span class="stat-note">Recorded sales</span>
+          </div>
+        </article>
+
+        <article class="stat-card stat-yellow">
+          <div class="stat-icon">₱</div>
+          <div>
+            <p>Total Revenue</p>
+            <h3 id="salesPageTotal">₱0.00</h3>
+            <span class="stat-note">All recorded sales</span>
+          </div>
+        </article>
+      </div>
+
+      <!-- POINT OF SALE -->
+      <section class="panel pos-panel">
+        <div class="panel-heading green-heading">
+          <div class="heading-title">
+            <span class="heading-icon">🛒</span>
+            <h3>Record a New Sale</h3>
+          </div>
+          <span class="heading-badge">CASHIER</span>
+        </div>
+
+        <div class="panel-body">
+          <form id="posForm" class="pos-form">
+            <label for="posProduct">Select Product</label>
+            <select id="posProduct" required>
+              <option value="">Choose a product</option>
+            </select>
+
+            <div class="pos-details">
+              <div>
+                <label for="posQuantity">Quantity</label>
+                <select id="posQuantity" required disabled>
+                  <option value="">Select quantity</option>
+                </select>
+              </div>
+
+              <div>
+                <label>Unit Price</label>
+                <div id="posUnitPrice" class="pos-value">₱0.00</div>
+              </div>
+            </div>
+
+            <div class="pos-total-box">
+              <span>Total Amount</span>
+              <strong id="posTotal">₱0.00</strong>
+            </div>
+
+            <button class="primary-btn pos-submit" type="submit">
+              ✓ Complete Sale
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- SALES HISTORY -->
+      <section class="panel">
+        <div class="panel-heading">
+          <div class="heading-title">
+            <span class="heading-icon">🧾</span>
+            <h3>Sales History</h3>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div id="salesList"></div>
+        </div>
+      </section>
+    </section>
+
+    <!-- EXPIRATION -->
+    <section id="expiration" class="page" hidden>
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">PRODUCT MONITORING</p>
+          <h2>Expiration Monitoring 📅</h2>
+          <p>Check products that are expired or nearing their expiration date.</p>
+        </div>
+        <span class="today-pill">📦 Product Safety</span>
+      </div>
+      <section class="panel">
+        <div class="panel-heading">
+          <div class="heading-title">
+            <span class="heading-icon">📅</span>
+            <h3>Expiration Records</h3>
+          </div>
+          <span class="heading-badge">MONITOR ITEMS</span>
+        </div>
+        <div class="panel-body">
+          <div id="expirationList"></div>
+        </div>
+      </section>
+    </section>
+
+    <!-- PAUTANG / LOANS -->
+<section id="loans" class="page" hidden>
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">CUSTOMER CREDIT RECORDS</p>
+      <h2>Loan / Pautang 💳</h2>
+      <p>Track customer balances and payments.</p>
+    </div>
+    <span class="today-pill">💰 Customer Loans</span>
+  </div>
+
+  <section class="panel">
+    <div class="panel-heading green-heading">
+      <div class="heading-title">
+        <span class="heading-icon">＋</span>
+        <h3>Record New Loan</h3>
+      </div>
+    </div>
+    <div class="panel-body">
+      <form id="loanForm" class="feature-form">
+        <label for="loanCustomer">Customer Name</label>
+        <input id="loanCustomer" type="text" placeholder="Enter customer name" required>
+
+        <label for="loanAmount">Amount (₱)</label>
+        <input id="loanAmount" type="number" min="0.01" step="0.01" placeholder="0.00" required>
+
+        <label for="loanDue">Due Date</label>
+        <input id="loanDue" type="date" required>
+
+        <button class="primary-btn" type="submit">＋ Save Loan</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-heading">
+      <div class="heading-title">
+        <span class="heading-icon">📋</span>
+        <h3>Customer Loan Records</h3>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div id="loanList"></div>
+    </div>
+  </section>
+</section>
+
+<!-- FINANCIAL REPORT -->
+<section id="reports" class="page" hidden>
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">BUSINESS FINANCIAL RECORDS</p>
+      <h2>Earnings and Cost Report 📊</h2>
+      <p>Monitor your store's revenue, expenses, and estimated profit.</p>
+    </div>
+    <span class="today-pill">📈 Financial Summary</span>
+  </div>
+
+  <div class="stats-grid">
+    <article class="stat-card stat-green">
+      <div class="stat-icon">💰</div>
+      <div>
+        <p>Total Revenue</p>
+        <h3 id="reportRevenue">₱0.00</h3>
+        <span class="stat-note">Recorded sales</span>
+      </div>
+    </article>
+
+    <article class="stat-card stat-yellow">
+      <div class="stat-icon">💸</div>
+      <div>
+        <p>Total Expenses</p>
+        <h3 id="reportExpenses">₱0.00</h3>
+        <span class="stat-note">Recorded expenses</span>
+      </div>
+    </article>
+
+    <article class="stat-card stat-purple">
+      <div class="stat-icon">📈</div>
+      <div>
+        <p>Estimated Profit</p>
+        <h3 id="reportProfit">₱0.00</h3>
+        <span class="stat-note">Revenue minus recorded costs</span>
+      </div>
+    </article>
+  </div>
+
+  <section class="panel">
+    <div class="panel-heading green-heading">
+      <div class="heading-title">
+        <span class="heading-icon">＋</span>
+        <h3>Record Store Expense</h3>
+      </div>
+    </div>
+    <div class="panel-body">
+      <form id="expenseForm" class="feature-form">
+        <label for="expenseDescription">Expense Description</label>
+        <input id="expenseDescription" type="text" placeholder="e.g. Electricity bill" required>
+
+        <label for="expenseAmount">Amount (₱)</label>
+        <input id="expenseAmount" type="number" min="0.01" step="0.01" placeholder="0.00" required>
+
+        <label for="expenseDate">Date</label>
+        <input id="expenseDate" type="date" required>
+
+        <button class="primary-btn" type="submit">＋ Add Expense</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-heading">
+      <div class="heading-title">
+        <span class="heading-icon">🧾</span>
+        <h3>Expense History</h3>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div id="expenseList"></div>
+    </div>
+  </section>
+
+  <p id="profitNotice" class="feature-note"></p>
+</section>
+
+<!-- SUPPLIERS -->
+<section id="suppliers" class="page" hidden>
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">STORE PURCHASE MANAGEMENT</p>
+      <h2>Supplier Accounts 🏪</h2>
+      <p>Manage suppliers, purchases, and payment records.</p>
+    </div>
+    <span class="today-pill">📦 Suppliers</span>
+  </div>
+
+  <section class="panel">
+    <div class="panel-heading green-heading">
+      <div class="heading-title">
+        <span class="heading-icon">＋</span>
+        <h3>Add Supplier</h3>
+      </div>
+    </div>
+    <div class="panel-body">
+      <form id="supplierForm" class="feature-form">
+        <label for="supplierName">Supplier Name</label>
+        <input id="supplierName" type="text" placeholder="Enter supplier or company name" required>
+
+        <label for="supplierContact">Contact Information</label>
+        <input id="supplierContact" type="text" placeholder="Phone number or address">
+
+        <button class="primary-btn" type="submit">＋ Save Supplier</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-heading">
+      <div class="heading-title">
+        <span class="heading-icon">🛒</span>
+        <h3>Record Supplier Purchase</h3>
+      </div>
+    </div>
+    <div class="panel-body">
+      <form id="purchaseForm" class="feature-form">
+        <label for="purchaseSupplier">Select Supplier</label>
+        <select id="purchaseSupplier" required>
+          <option value="">Choose supplier</option>
+        </select>
+
+        <label for="purchaseProduct">Product Name</label>
+        <input id="purchaseProduct" type="text" placeholder="Enter purchased product" required>
+
+        <div class="form-row">
+          <div>
+            <label for="purchaseQuantity">Quantity</label>
+            <input id="purchaseQuantity" type="number" min="1" step="1" required>
+          </div>
+          <div>
+            <label for="purchaseCost">Unit Cost (₱)</label>
+            <input id="purchaseCost" type="number" min="0.01" step="0.01" required>
+          </div>
+        </div>
+
+        <label for="purchaseStatus">Payment Status</label>
+        <select id="purchaseStatus" required>
+          <option value="Unpaid">Unpaid</option>
+          <option value="Paid">Paid</option>
+        </select>
+
+        <button class="primary-btn" type="submit">＋ Save Purchase</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-heading">
+      <div class="heading-title">
+        <span class="heading-icon">📋</span>
+        <h3>Supplier List</h3>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div id="supplierList"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-heading">
+      <div class="heading-title">
+        <span class="heading-icon">🧾</span>
+        <h3>Purchase History</h3>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div id="purchaseList"></div>
+    </div>
+  </section>
+
+  <p class="feature-note">
+    Note: This section records supplier purchases and payment status.
+    It does not process actual online payments.
+  </p>
+</section>
+
+    <footer class="main-footer">
+      <span>🛒 SariSari Pro</span>
+      <span>Manage • Track • Grow</span>
+    </footer>
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+
+            
+            
