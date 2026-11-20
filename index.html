@@ -9,52 +9,110 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="app-layout">
 
-  <aside class="sidebar">
-    <div class="brand">
-      <div class="brand-logo">
-        <img src="sarisari-logo.png">
-      </div>
-      <h1>SariSari <span>Pro</span></h1>
-      <p>Smart Store. Better Business!</p>
+<!-- LOGIN AND REGISTRATION -->
+<section id="authGate" class="auth-gate">
+  <div class="auth-card">
+    <div class="auth-brand-mark">🛒</div>
+    <p class="auth-eyebrow">SMART STORE. BETTER BUSINESS.</p>
+    <h1>SariSari <span>Pro</span></h1>
+    <p class="auth-intro">Sign in to manage your store, or create an account to get started.</p>
+
+    <div class="auth-tabs">
+      <button id="showLoginButton" class="auth-tab auth-tab-active" type="button">Log In</button>
+      <button id="showRegisterButton" class="auth-tab" type="button">Create Account</button>
     </div>
 
-    <div class="side-label">MAIN MENU</div>
-    <nav class="side-nav">
-      <button class="nav-btn active" onclick="navigateTo('home')">
-        <span>⌂</span> Home
-      </button>
-      <button class="nav-btn" onclick="navigateTo('products')">
-        <span>🛒</span> Products
-      </button>
-      <button class="nav-btn" onclick="navigateTo('sales')">
-        <span>▤</span> Sales
-      </button>
-      <button class="nav-btn" onclick="navigateTo('expiration')">
-        <span>📅</span> Expiration
-      </button>
-      <button class="nav-btn" onclick="navigateTo('loans')">
-  <span>💳</span> Pautang
-        
-</button>
+    <form id="loginForm" class="auth-form">
+      <label for="loginEmail">Email Address</label>
+      <input id="loginEmail" type="email" placeholder="you@example.com" required>
 
-<button class="nav-btn" onclick="navigateTo('reports')">
-  <span>📊</span> Reports
-</button>
+      <label for="loginPassword">Password</label>
+      <input id="loginPassword" type="password" placeholder="Enter your password" required>
 
-<button class="nav-btn" onclick="navigateTo('suppliers')">
-  <span>🏪</span> Suppliers
-</button>
-    </nav>
+      <button class="primary-btn auth-submit" type="submit">Log In to My Store</button>
+    </form>
 
-    <div class="sidebar-footer">
-      <div class="footer-leaf">🌱</div>
-      <strong>Grow your store!</strong>
-      <p>Simple tools for your everyday business.</p>
+    <form id="registerForm" class="auth-form" hidden>
+      <label for="registerStoreName">Store Name</label>
+      <input id="registerStoreName" type="text" placeholder="Enter your store name" required>
+
+      <label for="registerOwnerName">Full Name</label>
+      <input id="registerOwnerName" type="text" placeholder="Enter your name" required>
+
+      <label for="registerEmail">Email Address</label>
+      <input id="registerEmail" type="email" placeholder="you@example.com" required>
+
+      <label for="registerPassword">Password</label>
+      <input id="registerPassword" type="password" minlength="6" placeholder="At least 6 characters" required>
+
+      <button class="primary-btn auth-submit" type="submit">Create My Store Account</button>
+    </form>
+
+    <p id="authMessage" class="auth-message" aria-live="polite"></p>
+    <p class="auth-footnote">Your store records are private to your account.</p>
+  </div>
+</section>
+
+<div class="app-layout" id="appShell" hidden>
+
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-logo">
+      <img src="images/sarisari-logo.png" alt="SariSari Pro Logo">
     </div>
-    <div class="sidebar-credit">Made for sari-sari store owners ♥</div>
-  </aside>
+    <h1>SariSari <span>Pro</span></h1>
+    <p>Smart Store. Better Business!</p>
+  </div>
+
+  <div class="side-label">MAIN MENU</div>
+
+  <nav class="side-nav">
+    <button class="nav-btn active" onclick="navigateTo('home')">
+      <span>⌂</span> Home
+    </button>
+
+    <button class="nav-btn" onclick="navigateTo('products')">
+      <span>🛒</span> Products
+    </button>
+
+    <button class="nav-btn" onclick="navigateTo('sales')">
+      <span>▤</span> Sales
+    </button>
+
+    <button class="nav-btn" onclick="navigateTo('expiration')">
+      <span>📅</span> Expiration
+    </button>
+
+    <button class="nav-btn" onclick="navigateTo('loans')">
+      <span>💳</span> Pautang
+    </button>
+
+    <button class="nav-btn" onclick="navigateTo('reports')">
+      <span>📊</span> Reports
+    </button>
+
+    <button class="nav-btn" onclick="navigateTo('suppliers')">
+      <span>🏪</span> Suppliers
+    </button>
+  </nav>
+
+  <button type="button" id="logoutButton" class="logout-btn">
+    <span>↪</span> Log Out
+  </button>
+
+  <div class="sidebar-footer">
+    <div class="footer-leaf">🌱</div>
+    <strong>Grow your store!</strong>
+    <p>Simple tools for your everyday business.</p>
+  </div>
+
+  <div class="sidebar-credit">
+    Made for sari-sari store owners ♥
+  </div>
+</aside>
+
 
   <main class="main-content">
     <header class="topbar">
@@ -181,46 +239,7 @@
       </section>
 
       <div class="dashboard-grid">
-        <section class="panel add-panel">
-          <div class="panel-heading green-heading">
-            <div class="heading-title">
-              <span class="heading-icon">＋</span>
-              <h3>Add New Product</h3>
-            </div>
-            <span class="heading-badge">INVENTORY</span>
-          </div>
-          <div class="panel-body">
-            <p class="panel-description">Add an item to your store inventory.</p>
-            <form id="productForm" class="product-form">
-              <label for="productName">Product Name</label>
-              <input id="productName" type="text"
-                placeholder="e.g. Lucky Me Pancit Canton" required>
 
-              <label for="productExpiry">Expiration Date</label>
-              <input id="productExpiry" type="date">
-
-              <div class="form-row">
-                <div>
-                  <label for="productPrice">Price (₱)</label>
-                  <input id="productPrice" type="number"
-                    placeholder="0.00" min="0.01" step="0.01" required>
-                </div>
-                <div>
-                  <label for="productStock">Stock Quantity</label>
-                  <input id="productStock" type="number"
-                    placeholder="0" min="0" step="1" required>
-                </div>
-              </div>
-              <button class="primary-btn add-submit" type="submit">
-                ＋ Add Product
-              </button>
-            </form>
-            <div class="tip-box">
-              <span>💡</span>
-              <p>Keep your product stock and expiration dates updated.</p>
-            </div>
-          </div>
-        </section>
 
         <section class="panel recent-panel">
           <div class="panel-heading">
@@ -237,41 +256,104 @@
       </div>
     </section>
 
-    <!-- PRODUCTS -->
-    <section id="products" class="page" hidden>
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">INVENTORY MANAGEMENT</p>
-          <h2>My Products 🛒</h2>
-          <p>Manage your items, prices, and available stock.</p>
-          <button class="primary-btn" onclick="navigateTo('home')">
-  ＋ Add New Product
-          </button>
+    
+<!-- PRODUCTS -->
+<section id="products" class="page" hidden>
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">INVENTORY MANAGEMENT</p>
+      <h2>My Products 🛒</h2>
+      <p>Manage your items, prices, and available stock.</p>
+      <button type="button" class="primary-btn" onclick="toggleProductForm(true)">
+        ＋ Add New Product
+      </button>
+    </div>
+    <span class="today-pill">📦 Inventory</span>
+  </div>
+
+  <div class="inventory-banner">
+    <div>
+      <h3>Everything in your store, organized.</h3>
+      <p>Add new items, update prices, or record a sale.</p>
+    </div>
+    <span>🏪</span>
+  </div>
+
+  <div id="addProductPanel" hidden>
+    <section class="panel add-panel">
+      <div class="panel-heading green-heading">
+        <div class="heading-title">
+          <span class="heading-icon">＋</span>
+          <h3>Add New Product</h3>
         </div>
-        <span class="today-pill">📦 Inventory</span>
+        <span class="heading-badge">INVENTORY</span>
       </div>
 
-      <div class="inventory-banner">
-        <div>
-          <h3>Everything in your store, organized.</h3>
-          <p>Add new items, update prices, or record a sale.</p>
-        </div>
-        <span>🏪</span>
-      </div>
+      <div class="panel-body">
+        <p class="panel-description">Add an item to your store inventory.</p>
 
-      <section class="panel inventory-panel">
-        <div class="panel-heading">
-          <div class="heading-title">
-            <span class="heading-icon">📋</span>
-            <h3>Product Inventory</h3>
-          </div>
-          <span class="heading-badge light-badge">MANAGE ITEMS</span>
+        
+<form id="productForm" class="product-form">
+  <label for="productName">Product Name</label>
+  <input id="productName" type="text"
+    placeholder="e.g. Lucky Me Pancit Canton" required>
+
+  <label for="productImage">Product Picture</label>
+  <input id="productImage" type="file"
+    accept="image/*">
+
+  <div id="productImagePreview" style="display:none; margin:10px 0;">
+    <img id="previewImage"
+      src=""
+      alt="Product Preview"
+      style="width:120px; height:120px; object-fit:cover; border-radius:12px;">
+  </div>
+
+  <label for="productExpiry">Expiration Date</label>
+  <input id="productExpiry" type="date">
+
+  <div class="form-row">
+    <div>
+      <label for="productPrice">Price (₱)</label>
+      <input id="productPrice" type="number"
+        placeholder="0.00" min="0.01" step="0.01" required>
+    </div>
+    <div>
+      <label for="productStock">Stock Quantity</label>
+      <input id="productStock" type="number"
+        placeholder="0" min="0" step="1" required>
+    </div>
+  </div>
+
+  <button class="primary-btn add-submit" type="submit">
+    ＋ Add Product
+  </button>
+
+  <button type="button" class="text-btn"
+    onclick="toggleProductForm(false)">Cancel</button>
+</form>
+
+        <div class="tip-box">
+          <span>💡</span>
+          <p>Keep your product stock and expiration dates updated.</p>
         </div>
-        <div class="panel-body">
-          <div id="productList"></div>
-        </div>
-      </section>
+      </div>
     </section>
+  </div>
+
+  <section class="panel inventory-panel">
+    <div class="panel-heading">
+      <div class="heading-title">
+        <span class="heading-icon">📋</span>
+        <h3>Product Inventory</h3>
+      </div>
+      <span class="heading-badge light-badge">MANAGE ITEMS</span>
+    </div>
+    <div class="panel-body">
+      <div id="productList"></div>
+    </div>
+  </section>
+</section>
 
     <!-- SALES -->
 
@@ -615,14 +697,14 @@
 
     <footer class="main-footer">
       <span>🛒 SariSari Pro</span>
-      <span>Manage • Track • Grow</span>
+      <span>Manage • Track • Grow</span
     </footer>
   </main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="script.js"></script>
-</body>
-</html>
 
             
             
+           
