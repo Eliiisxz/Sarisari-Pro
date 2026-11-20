@@ -1,4 +1,6 @@
 
+const SUPABASE_URL = "https://ivwqfdtpdvejrtyfdtdu.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_v4kFzorR6wbmkviPATEi4w_YF1-HFlT";
 const STORAGE_KEY = "sariSariProData";
 
 function loadData() {
@@ -105,6 +107,7 @@ function updateDashboard() {
 }
 
 // PRODUCTS
+
 function renderProducts() {
   const list = document.getElementById("productList");
   if (!list) return;
@@ -124,26 +127,39 @@ function renderProducts() {
     const item = document.createElement("div");
     item.className = "product-item";
 
+    const imageHTML = product.imageUrl
+      ? `<img src="${escapeHTML(product.imageUrl)}"
+          alt="${escapeHTML(product.name)}"
+          class="product-photo">`
+      : `<div class="item-avatar">🛒</div>`;
+
     item.innerHTML = `
       <div class="item-main">
-        <div class="item-avatar">🛒</div>
+        ${imageHTML}
         <div>
           <h3>${escapeHTML(product.name)}</h3>
           <p>Price: ${formatMoney(product.price)}</p>
           <p>Stock: ${Number(product.stock)}</p>
           <p>Expiration: ${product.expiryDate
-            ? escapeHTML(product.expiryDate) : "No expiration date set"}</p>
+            ? escapeHTML(product.expiryDate)
+            : "No expiration date set"}</p>
         </div>
       </div>
+
       <div class="item-actions">
-        <button class="action-btn record-btn" onclick="recordSale(${index})">Record Sale</button>
-        <button class="action-btn edit-btn" onclick="editProduct(${index})">Edit</button>
-        <button class="action-btn delete-btn" onclick="deleteProduct(${index})">Delete</button>
+        <button class="action-btn record-btn"
+          onclick="recordSale(${index})">Record Sale</button>
+        <button class="action-btn edit-btn"
+          onclick="editProduct(${index})">Edit</button>
+        <button class="action-btn delete-btn"
+          onclick="deleteProduct(${index})">Delete</button>
       </div>
     `;
+
     list.appendChild(item);
   });
 }
+
 
 // SALES HISTORY
 function renderSales() {
@@ -345,14 +361,16 @@ function renderExpirationPage() {
 // ADD PRODUCT
 const productForm = document.getElementById("productForm");
 
+
 if (productForm) {
-  productForm.addEventListener("submit", function(event) {
+  productForm.addEventListener("submit", async function(event) {
     event.preventDefault();
 
     const name = document.getElementById("productName").value.trim();
     const expiryDate = document.getElementById("productExpiry").value;
     const price = Number(document.getElementById("productPrice").value);
     const stock = Number(document.getElementById("productStock").value);
+    const imageFile = document.getElementById("productImage").files[0];
 
     if (!name || !Number.isFinite(price) || price <= 0 ||
         !Number.isInteger(stock) || stock < 0) {
@@ -360,20 +378,94 @@ if (productForm) {
       return;
     }
 
-    const newProduct = { name, price, stock, expiryDate };
-    products.push(newProduct);
+    const submitButton = productForm.querySelector(
+      'button[type="submit"]'
+    );
 
-    if (!saveData()) {
-      products.pop();
-      return;
+    submitButton.disabled = true;
+    submitButton.textContent = "Saving Product...";
+
+    try {
+      let imageUrl = "";
+
+      if (imageFile) {
+        if (!imageFile.type.startsWith("image/")) {
+          throw new Error("Please select a valid image.");
+        }
+
+        const client = window.supabase.createClient(
+          SUPABASE_URL,
+          SUPABASE_PUBLISHABLE_KEY
+        );
+
+        const { data: userData, error: userError } =
+          await client.auth.getUser();
+
+        if (userError) throw userError;
+        if (!userData.user) {
+          throw new Error("Please log in again before uploading.");
+        }
+
+        const fileExtension = imageFile.name.split(".").pop();
+        const filePath =
+          userData.user.id + "/" + Date.now() + "." + fileExtension;
+
+        const { error: uploadError } = await client.storage
+          .from("product-images")
+          .upload(filePath, imageFile, {
+            upsert: false,
+            contentType: imageFile.type
+          });
+
+        if (uploadError) throw uploadError;
+
+        const { data: urlData } = client.storage
+          .from("product-images")
+          .getPublicUrl(filePath);
+
+        imageUrl = urlData.publicUrl;
+      }
+
+      const newProduct = {
+        name,
+        price,
+        stock,
+        expiryDate,
+        imageUrl
+      };
+
+      products.push(newProduct);
+
+      if (!saveData()) {
+        products.pop();
+        throw new Error("Product could not be saved.");
+      }
+
+      productForm.reset();
+
+      if (productImagePreview) {
+        productImagePreview.style.display = "none";
+      }
+
+      if (previewImage) {
+        previewImage.src = "";
+      }
+
+      renderProducts();
+      updateDashboard();
+      renderExpirationPage();
+
+      alert("Product added successfully!");
+
+    } catch (error) {
+      alert(error.message || "Unable to save product.");
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = "＋ Add Product";
     }
-
-    this.reset();
-    renderProducts();
-    updateDashboard();
-    renderExpirationPage();
-    alert("Product added successfully!");
   });
+}
+
 }
 
 // EDIT PRODUCT
@@ -748,8 +840,6 @@ function startRestock(productName) {
     productInput.focus();
   }
 }
-
-
 // =============================================
 // LOAN / PAUTANG
 // =============================================
@@ -812,7 +902,6 @@ function renderLoans() {
   [...loans].reverse().forEach(loan => {
     const item = document.createElement("div");
     item.className = "feature-record";
-
     item.innerHTML = `
       <div class="feature-record-info">
         <h3>${escapeHTML(loan.customer)}</h3>
@@ -856,7 +945,6 @@ function markLoanPaid(id) {
   renderLoans();
   alert("Loan marked as paid!");
 }
-
 function deleteLoan(id) {
   const index = loans.findIndex(item => item.id === id);
   if (index < 0 || !confirm("Delete this loan record?")) return;
@@ -917,7 +1005,6 @@ if (expenseForm) {
     alert("Expense recorded successfully!");
   });
 }
-
 function renderFinancialReport() {
   const revenueDisplay = document.getElementById("reportRevenue");
   const expensesDisplay = document.getElementById("reportExpenses");
@@ -995,7 +1082,6 @@ function renderFinancialReport() {
         </button>
       </div>
     `;
-
     expenseList.appendChild(item);
   });
 }
@@ -1076,8 +1162,6 @@ function updateSupplierDropdown() {
     select.value = previousValue;
   }
 }
-
-
 // RECORD PURCHASE
 const purchaseForm = document.getElementById("purchaseForm");
 
@@ -1121,7 +1205,6 @@ if (purchaseForm) {
       status,
       date: new Date().toISOString()
     };
-
     // Add stock to an existing matching product.
     const matchingProduct = products.find(product =>
       product.name.trim().toLowerCase() === productName.toLowerCase()
@@ -1179,7 +1262,6 @@ function renderSuppliers() {
   const purchaseList = document.getElementById("purchaseList");
 
   updateSupplierDropdown();
-
   if (supplierList) {
     if (!suppliers.length) {
       supplierList.innerHTML = `
@@ -1359,7 +1441,6 @@ function createChartBars(containerId, items, formatter) {
     ...items.map(item => Number(item.value) || 0),
     1
   );
-
   container.innerHTML = items.map(item => {
     const value = Number(item.value) || 0;
 
@@ -1468,7 +1549,6 @@ function renderExpenseChart() {
       totals[dateKey] += Number(expense.amount) || 0;
     }
   });
-
   const items = days.map(day => ({
     label: day.label,
     value: totals[day.key]
@@ -1506,3 +1586,206 @@ saveData = function() {
 
 // INITIAL CHART DISPLAY
 renderDashboardCharts();
+
+
+function toggleProductForm(force) {
+  const panel = document.getElementById("addProductPanel");
+
+  if (!panel) {
+    console.error("Add Product panel not found!");
+    return;
+  }
+
+  const shouldShow = typeof force === "boolean"
+    ? force
+    : panel.hidden;
+
+  panel.hidden = !shouldShow;
+
+  if (shouldShow) {
+    panel.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+    document.getElementById("productName")?.focus();
+  }
+}
+// =====================================
+// LOGIN AND CREATE ACCOUNT TAB SWITCH
+// =====================================
+
+const showLoginButton = document.getElementById("showLoginButton");
+const showRegisterButton = document.getElementById("showRegisterButton");
+const loginForm = document.getElementById("loginForm");
+const registerForm = document.getElementById("registerForm");
+
+if (showLoginButton && showRegisterButton && loginForm && registerForm) {
+
+  showLoginButton.addEventListener("click", function () {
+    loginForm.hidden = false;
+    registerForm.hidden = true;
+
+    showLoginButton.classList.add("auth-tab-active");
+    showRegisterButton.classList.remove("auth-tab-active");
+  });
+
+  showRegisterButton.addEventListener("click", function () {
+    loginForm.hidden = true;
+    registerForm.hidden = false;
+    showRegisterButton.classList.add("auth-tab-active");
+    showLoginButton.classList.remove("auth-tab-active");
+  });
+
+}
+// =====================================
+// SUPABASE ACCOUNT REGISTRATION
+// =====================================
+
+(function () {
+  const registerForm = document.getElementById("registerForm");
+  const authMessage = document.getElementById("authMessage");
+
+  if (!registerForm) return;
+
+  registerForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const storeName = document.getElementById("registerStoreName").value.trim();
+    const ownerName = document.getElementById("registerOwnerName").value.trim();
+    const email = document.getElementById("registerEmail").value.trim();
+    const password = document.getElementById("registerPassword").value;
+
+    if (!storeName || !ownerName || !email || password.length < 6) {
+      authMessage.textContent = "Please complete all fields. Password must be at least 6 characters.";
+      return;
+    }
+
+    if (!window.supabase?.createClient) {
+      authMessage.textContent = "Supabase did not load. Please check your internet connection.";
+      return;
+    }
+
+    const button = registerForm.querySelector('button[type="submit"]');
+    button.disabled = true;
+    button.textContent = "Creating Account...";
+
+    try {
+      const client = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+      const { data, error } = await client.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+          data: {
+            store_name: storeName,
+            owner_name: ownerName
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.user) {
+        authMessage.textContent = data.session
+          ? "Account created successfully! You can now log in."
+          : "Account created! Please check your email to confirm your account.";
+      }
+
+    } catch (error) {
+      authMessage.textContent = error.message || "Registration failed.";
+    } finally {
+      button.disabled = false;
+      button.textContent = "Create My Store Account";
+    }
+  });
+})();
+// =====================================
+// SUPABASE OWNER LOGIN
+// =====================================
+
+(function () {
+  const loginForm = document.getElementById("loginForm");
+  const authMessage = document.getElementById("authMessage");
+
+  if (!loginForm) return;
+
+  loginForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+    const button = loginForm.querySelector('button[type="submit"]');
+
+    button.disabled = true;
+    button.textContent = "Logging in...";
+
+    try {
+      const client = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+
+      const { data, error } = await client.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+      if (error) throw error;
+
+      // Show the owner dashboard
+      document.getElementById("authGate").hidden = true;
+      document.getElementById("appShell").hidden = false;
+
+      if (typeof updateDashboard === "function") {
+        updateDashboard();
+      }
+
+      if (authMessage) {
+        authMessage.textContent = "";
+      }
+
+    } catch (error) {
+      if (authMessage) {
+        authMessage.textContent = error.message || "Login failed.";
+      }
+    } finally {
+      button.disabled = false;
+      button.textContent = "Log In to My Store";
+    }
+  });
+})();
+
+// PRODUCT IMAGE PREVIEW
+const productImageInput = document.getElementById("productImage");
+const productImagePreview = document.getElementById("productImagePreview");
+const previewImage = document.getElementById("previewImage");
+
+if (productImageInput) {
+  productImageInput.addEventListener("change", function () {
+    const file = this.files[0];
+
+    if (!file) {
+      productImagePreview.style.display = "none";
+      previewImage.src = "";
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file.");
+      this.value = "";
+      productImagePreview.style.display = "none";
+      return;
+    }
+
+    const imageURL = URL.createObjectURL(file);
+    previewImage.src = imageURL;
+    productImagePreview.style.display = "block";
+  });
+}
+
+      
+    
+  
