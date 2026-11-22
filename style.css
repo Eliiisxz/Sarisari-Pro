@@ -1432,5 +1432,8 @@ button {
 .product-photo {
   object-fit: cover;
 }
-
+/* FIX: Hide sections properly */
+[hidden] {
+  display: none !important;
+}
  
