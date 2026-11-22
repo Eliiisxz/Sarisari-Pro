@@ -1451,29 +1451,53 @@ button {
   display: grid;
 }
 /* LOG OUT BUTTON AT THE BOTTOM OF SIDEBAR */
+
+/* LOG OUT BUTTON AT THE BOTTOM OF SIDEBAR */
+
 .sidebar {
   display: flex;
   flex-direction: column;
 }
 
 .logout-btn {
-  width: calc(100% - 40px);
-  margin: auto 20px 18px;
-  padding: 10px 14px;
+  width: auto;
+  min-width: 110px;
+  max-width: 125px;
+  align-self: center;
+  margin: 14px auto 10px;
+  padding: 9px 15px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  background: #fff1f0;
-  color: #d94841;
-  border: 1px solid #ffd6d2;
-  border-radius: 8px;
+  gap: 7px;
+
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 9px;
+
   font-family: inherit;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 700;
   cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .logout-btn:hover {
-  background: #ffe2df;
+  background: #ffffff;
+  color: #075b3b;
+}
+
+.logout-btn span {
+  font-size: 15px;
+}
+
+@media (max-width: 700px) {
+  .logout-btn {
+    align-self: flex-end;
+    margin: 10px 2px 0 auto;
+    min-width: 105px;
+    padding: 8px 13px;
+  }
 }
