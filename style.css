@@ -39,6 +39,11 @@ button {
   min-height: 100vh;
 }
 
+/* Hide dashboard completely before login */
+.app-layout[hidden] {
+  display: none !important;
+}
+
 /* SIDEBAR */
 .sidebar {
   width: 250px;
