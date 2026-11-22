@@ -1818,4 +1818,42 @@ async function checkLoginSession() {
 }
 
 checkLoginSession();
+
+/* =====================================
+   LOG OUT FUNCTION
+===================================== */
+
+const logoutButton = document.getElementById("logoutButton");
+
+if (logoutButton) {
+  logoutButton.addEventListener("click", async function () {
+    logoutButton.disabled = true;
+    logoutButton.textContent = "Logging out...";
+
+    try {
+      const { error } = await client.auth.signOut();
+
+      if (error) {
+        throw error;
+      }
+
+      document.getElementById("appShell").hidden = true;
+      document.getElementById("authGate").hidden = false;
+
+      const loginForm = document.getElementById("loginForm");
+      const registerForm = document.getElementById("registerForm");
+      const authMessage = document.getElementById("authMessage");
+
+      if (loginForm) loginForm.hidden = false;
+      if (registerForm) registerForm.hidden = true;
+      if (authMessage) authMessage.textContent = "";
+
+    } catch (error) {
+      alert("Unable to log out: " + error.message);
+      logoutButton.disabled = false;
+      logoutButton.innerHTML = "<span>↪</span> Log Out";
+    }
+  });
+}
+
   
