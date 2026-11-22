@@ -2,6 +2,17 @@
 const SUPABASE_URL = "https://ivwqfdtpdvejrtyfdtdu.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_v4kFzorR6wbmkviPATEi4w_YF1-HFlT";
 const STORAGE_KEY = "sariSariProData";
+const client = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY,
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true
+    }
+  }
+);
 
 function loadData() {
   try {
@@ -1784,24 +1795,22 @@ if (productImageInput) {
     productImagePreview.style.display = "block";
   });
 }
-// CHECK EXISTING LOGIN SESSION
+// AUTOMATIC LOGIN SESSION CHECK
 async function checkLoginSession() {
-  const { data: { session }, error } = await client.auth.getSession();
+  const authGate = document.getElementById("authGate");
+  const appShell = document.getElementById("appShell");
+
+  const { data, error } = await client.auth.getSession();
 
   if (error) {
     console.error("Session error:", error);
     return;
   }
 
-  const authGate = document.getElementById("authGate");
-  const appShell = document.getElementById("appShell");
-
-  if (session) {
+  if (data.session) {
     authGate.hidden = true;
     appShell.hidden = false;
-
-    // Load the logged-in owner's dashboard data here
-    // if your existing project has a data-loading function.
+    updateDashboard();
   } else {
     authGate.hidden = false;
     appShell.hidden = true;
@@ -1809,6 +1818,4 @@ async function checkLoginSession() {
 }
 
 checkLoginSession();
-      
-    
   
