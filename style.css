@@ -1436,4 +1436,12 @@ button {
 [hidden] {
   display: none !important;
 }
- 
+ /* Keep the dashboard hidden before login */
+#appShell[hidden] {
+  display: none !important;
+}
+
+/* Show the dashboard after successful login */
+#appShell:not([hidden]) {
+  display: grid;
+}
