@@ -1784,7 +1784,31 @@ if (productImageInput) {
     productImagePreview.style.display = "block";
   });
 }
+// CHECK EXISTING LOGIN SESSION
+async function checkLoginSession() {
+  const { data: { session }, error } = await client.auth.getSession();
 
+  if (error) {
+    console.error("Session error:", error);
+    return;
+  }
+
+  const authGate = document.getElementById("authGate");
+  const appShell = document.getElementById("appShell");
+
+  if (session) {
+    authGate.hidden = true;
+    appShell.hidden = false;
+
+    // Load the logged-in owner's dashboard data here
+    // if your existing project has a data-loading function.
+  } else {
+    authGate.hidden = false;
+    appShell.hidden = true;
+  }
+}
+
+checkLoginSession();
       
     
   
