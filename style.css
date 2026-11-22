@@ -1450,3 +1450,30 @@ button {
 #appShell:not([hidden]) {
   display: grid;
 }
+/* LOG OUT BUTTON AT THE BOTTOM OF SIDEBAR */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+.logout-btn {
+  width: calc(100% - 40px);
+  margin: auto 20px 18px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #fff1f0;
+  color: #d94841;
+  border: 1px solid #ffd6d2;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #ffe2df;
+}
