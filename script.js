@@ -1828,7 +1828,7 @@ const logoutButton = document.getElementById("logoutButton");
 if (logoutButton) {
   logoutButton.addEventListener("click", async function () {
     logoutButton.disabled = true;
-    logoutButton.textContent = "Logging out...";
+    logoutButton.innerHTML = "Logging out...";
 
     try {
       const { error } = await client.auth.signOut();
@@ -1837,23 +1837,16 @@ if (logoutButton) {
         throw error;
       }
 
-      document.getElementById("appShell").hidden = true;
-      document.getElementById("authGate").hidden = false;
-
-      const loginForm = document.getElementById("loginForm");
-      const registerForm = document.getElementById("registerForm");
-      const authMessage = document.getElementById("authMessage");
-
-      if (loginForm) loginForm.hidden = false;
-      if (registerForm) registerForm.hidden = true;
-      if (authMessage) authMessage.textContent = "";
+      // Automatically reload and show the login page
+      window.location.reload();
 
     } catch (error) {
-      alert("Unable to log out: " + error.message);
+      console.error("Logout error:", error);
+      alert("Unable to log out. Please try again.");
+
       logoutButton.disabled = false;
       logoutButton.innerHTML = "<span>↪</span> Log Out";
     }
   });
 }
 
-  
