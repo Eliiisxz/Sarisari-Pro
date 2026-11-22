@@ -834,22 +834,51 @@ button {
   padding: 23px 0 5px;
 }
 
-/* TABLET */
-@media (max-width: 1050px) {
+
+/* TABLET LAYOUT FIX */
+@media (min-width: 701px) and (max-width: 1050px) {
+  .app-layout {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100%;
+  }
+
   .sidebar {
+    flex: 0 0 215px;
     width: 215px;
     min-width: 215px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
   }
 
   .main-content {
-    width: calc(100% - 215px);
-    padding: 27px 24px;
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+    padding: 27px 20px;
   }
 
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-charts {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-panel:last-child {
+    grid-column: auto;
+  }
 }
+
 
 /* MOBILE */
 @media (max-width: 700px) {
