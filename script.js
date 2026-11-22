@@ -466,7 +466,6 @@ if (productForm) {
   });
 }
 
-}
 
 // EDIT PRODUCT
 function editProduct(index) {
