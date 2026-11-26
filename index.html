@@ -29,6 +29,12 @@
 
       <label for="loginPassword">Password</label>
       <input id="loginPassword" type="password" placeholder="Enter your password" required>
+      <button
+  type="button"
+  id="forgotPasswordButton"
+  class="forgot-password-btn">
+  Forgot Password?
+      </button>
 
       <button class="primary-btn auth-submit" type="submit">Log In to My Store</button>
     </form>
@@ -49,6 +55,50 @@
       <button class="primary-btn auth-submit" type="submit">Create My Store Account</button>
     </form>
 
+    <form id="resetRequestForm" class="auth-form" hidden>
+  <h3>Reset Your Password</h3>
+  <p>Enter your registered email to receive a password reset link.</p>
+
+  <label for="resetEmail">Email Address</label>
+  <input
+    id="resetEmail"
+    type="email"
+    placeholder="you@example.com"
+    required>
+
+  <button type="submit" class="primary-btn auth-submit">
+    Send Reset Link
+  </button>
+
+  <button type="button" id="backToLoginButton" class="forgot-password-btn">
+    Back to Login
+  </button>
+</form>
+
+<form id="newPasswordForm" class="auth-form" hidden>
+  <h3>Create New Password</h3>
+
+  <label for="newPassword">New Password</label>
+  <input
+    id="newPassword"
+    type="password"
+    minlength="6"
+    placeholder="Enter new password"
+    required>
+
+  <label for="confirmNewPassword">Confirm Password</label>
+  <input
+    id="confirmNewPassword"
+    type="password"
+    minlength="6"
+    placeholder="Confirm new password"
+    required>
+
+  <button type="submit" class="primary-btn auth-submit">
+    Save New Password
+  </button>
+</form>
+    
     <p id="authMessage" class="auth-message" aria-live="polite"></p>
     <p class="auth-footnote">Your store records are private to your account.</p>
   </div>
