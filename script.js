@@ -203,18 +203,79 @@ function renderSales() {
     const item = document.createElement("div");
     item.className = "sale-item";
     item.innerHTML = `
-      <div class="item-main">
-        <div class="item-avatar">🧾</div>
-        <div>
-          <h3>${escapeHTML(sale.name)}</h3>
-          <p>Quantity sold: ${Number(sale.quantity)}</p>
-          <p>Date: ${escapeHTML(new Date(sale.date).toLocaleString())}</p>
-        </div>
-      </div>
-      <strong class="sale-total">${formatMoney(sale.total)}</strong>
-    `;
+  <div class="item-main">
+    <div class="item-avatar">🧾</div>
+    <div>
+      <h3>${escapeHTML(sale.name)}</h3>
+      <p>Quantity sold: ${Number(sale.quantity)}</p>
+      <p>Date: ${escapeHTML(new Date(sale.date).toLocaleString())}</p>
+    </div>
+  </div>
+
+  <div class="sale-actions">
+    <strong class="sale-total">${formatMoney(sale.total)}</strong>
+    <button
+      class="action-btn delete-btn"
+      onclick="cancelSale(${sales.indexOf(sale)})">
+      Cancel Sale
+    </button>
+  </div>
+`;
     list.appendChild(item);
   });
+}
+
+// =====================================
+// CANCEL / DELETE SALES TRANSACTION
+// =====================================
+
+function cancelSale(index) {
+  const sale = sales[index];
+
+  if (!sale) {
+    alert("Sale record not found.");
+    return;
+  }
+
+  const confirmed = confirm(
+    "Are you sure you want to cancel this sale?\n\n" +
+    sale.name + "\n" +
+    "Quantity: " + sale.quantity + "\n" +
+    "Total: " + formatMoney(sale.total)
+  );
+
+  if (!confirmed) return;
+
+  // Restore stock if the product still exists.
+  const product = products.find(
+    item => item.name === sale.name
+  );
+
+  if (product) {
+    product.stock =
+      Number(product.stock) + Number(sale.quantity);
+  }
+
+  const deletedSale = sales.splice(index, 1)[0];
+
+  if (!saveData()) {
+    sales.splice(index, 0, deletedSale);
+
+    if (product) {
+      product.stock =
+        Number(product.stock) - Number(sale.quantity);
+    }
+
+    return;
+  }
+
+  renderSales();
+  renderRecentSales();
+  renderProducts();
+  updateDashboard();
+  renderExpirationPage();
+
+  alert("Sale cancelled successfully!");
 }
 
 // RECENT SALES
@@ -1849,4 +1910,125 @@ if (logoutButton) {
     }
   });
 }
+
+// =====================================
+// FORGOT PASSWORD AND RESET PASSWORD
+// =====================================
+
+(function () {
+  const forgotButton = document.getElementById("forgotPasswordButton");
+  const resetForm = document.getElementById("resetRequestForm");
+  const newPasswordForm = document.getElementById("newPasswordForm");
+  const backButton = document.getElementById("backToLoginButton");
+
+  const loginForm = document.getElementById("loginForm");
+  const registerForm = document.getElementById("registerForm");
+  const authMessage = document.getElementById("authMessage");
+  const authTabs = document.querySelector(".auth-tabs");
+
+  function showAuthForm(selectedForm) {
+    [loginForm, registerForm, resetForm, newPasswordForm].forEach(form => {
+      if (form) form.hidden = form !== selectedForm;
+    });
+
+    if (authTabs) {
+      authTabs.hidden =
+        selectedForm === resetForm ||
+        selectedForm === newPasswordForm;
+    }
+
+    if (authMessage) authMessage.textContent = "";
+  }
+
+  forgotButton?.addEventListener("click", function () {
+    document.getElementById("resetEmail").value =
+      document.getElementById("loginEmail").value.trim();
+
+    showAuthForm(resetForm);
+  });
+
+  backButton?.addEventListener("click", function () {
+    showAuthForm(loginForm);
+  });
+
+  resetForm?.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById("resetEmail").value.trim();
+    const button = resetForm.querySelector('[type="submit"]');
+
+    button.disabled = true;
+    button.textContent = "Sending...";
+
+    try {
+      const redirectTo =
+        window.location.origin + window.location.pathname;
+
+      const { error } = await client.auth.resetPasswordForEmail(email, {
+        redirectTo: redirectTo
+      });
+
+      if (error) throw error;
+
+      authMessage.textContent =
+        "If the account exists, a password reset email will be sent.";
+    } catch (error) {
+      authMessage.textContent = error.message;
+    } finally {
+      button.disabled = false;
+      button.textContent = "Send Reset Link";
+    }
+  });
+
+  newPasswordForm?.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const password = document.getElementById("newPassword").value;
+    const confirmPassword =
+      document.getElementById("confirmNewPassword").value;
+
+    if (password.length < 6) {
+      authMessage.textContent =
+        "Password must contain at least 6 characters.";
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      authMessage.textContent = "Passwords do not match.";
+      return;
+    }
+
+    const button = newPasswordForm.querySelector('[type="submit"]');
+    button.disabled = true;
+
+    try {
+      const { error } = await client.auth.updateUser({
+        password: password
+      });
+
+      if (error) throw error;
+
+      newPasswordForm.reset();
+      showAuthForm(loginForm);
+
+      authMessage.textContent =
+        "Password updated successfully! You can now log in.";
+    } catch (error) {
+      authMessage.textContent = error.message;
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  client.auth.onAuthStateChange(function (event) {
+    if (event === "PASSWORD_RECOVERY") {
+      document.getElementById("authGate").hidden = false;
+      document.getElementById("appShell").hidden = true;
+
+      showAuthForm(newPasswordForm);
+
+      authMessage.textContent = "Enter your new password.";
+    }
+  });
+})();
 
